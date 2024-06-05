@@ -10,6 +10,9 @@
 body {
     margin: 0;
     font-family: "Motiva Sans", sans-serif;
+    /* background-color: #2a536b; */
+    background: linear-gradient(166deg, rgba(44,83,81,1) 0%, rgba(6,38,59,1) 53%);
+
 }
 
 nav {
@@ -32,7 +35,7 @@ nav {
 }
 
 .nav-link {
-    color: rgb(255,255,255,0.5);
+    color: rgba(255,255,255,0.5);
     text-align: center;
     text-decoration: none;
     margin: 0.5rem;
@@ -41,7 +44,7 @@ nav {
 
 .container {
     display: flex;
-    margin-top: 10rem;
+    margin: 10rem 3rem;
 }
 
 
@@ -51,18 +54,15 @@ nav {
     flex-direction: column;
 }
 
-display-wrapper {
-    flex: 0 0 auto;
+.display-wrapper {
+    flex: 1;
 }
 
 .search-wrapper {
-    padding: 1rem;
-    flex: 0 0 20%;
+    flex: 1;
+    padding-top: 0.3rem;
+    padding-right: 2rem;
 }
- 
-
-
-
 
 
 /* game wrapper */
@@ -87,31 +87,51 @@ display-wrapper {
     aspect-ratio: 16 / 9;
 }
 
-#display-board > .game-wrapper .game-name {
-    padding: 0.5rem;
-    text-align: center;
-}
-
-/* Slider wrapper  */
+/* Slider wrapper   */
 #slider-wrapper {
     display: flex;
-    /* overflow: scroll; */
-    height: auto;
+    overflow: scroll;
+
 }
 
-#slider-wrapper > .game-wrapper {
+#slider-wrapper .trending-game {
+    flex: 1 0 calc(100%/3);
+    display: flex;
+    flex-direction: column;
     padding: 0.25rem;
-    flex: 0 0 calc(100%/3);
+
 }
 
-#slider-wrapper > .game-wrapper .game-img {
-    height: 100%;
+#slider-wrapper .trending-game .game-img {
     width: 100%;
+    height: 100%;
     object-fit: cover;
     aspect-ratio: 16 / 9;
 }
 
-#slider-wrapper > .game-wrapper .game-name {
-    padding: 0.5rem;
+
+.game-info {
+    display: flex;
+    justify-content: space-between;
+    background: linear-gradient(166deg, rgba(156,228,217,1) 25%, rgba(134,196,195,1) 46%, rgba(135,200,193,1) 61%, rgba(61,218,190,1) 80%);
+
+}
+
+.game-name,
+.game-price {
     text-align: center;
+    padding: 0.5rem;
+    border: none;
+    outline: none;
+}
+
+
+
+.load-more {
+    align-self: end;
+    padding: 0.5rem;
+}
+.load-more > a {
+    color: rgba(255,255,255,0.5);
+    font-size: 1.25rem;
 }
