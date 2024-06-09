@@ -44,7 +44,9 @@ nav {
 
 .container {
     display: flex;
-    margin: 10rem 3rem;
+    flex-direction: column;
+    margin: 0rem 3rem;
+    border: 3px solid gray;
 }
 
 
@@ -55,22 +57,43 @@ nav {
 }
 
 .display-wrapper {
-    flex: 1;
 }
 
 .search-wrapper {
-    flex: 1;
-    padding-top: 0.3rem;
-    padding-right: 2rem;
+    padding-top: 0.75rem;
+    border-right: 3px solid gray;
 }
+
+.categorize-list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.categorize-item {
+    list-style: none;
+    color: whitesmoke;
+    cursor: pointer;
+    padding: 0.2rem;
+    font-size: 0.8rem;
+}
+
+.categorize-item:hover {
+    font-size: 1rem;
+    text-decoration: underline;
+    transition: 150ms ease-in-out;
+}
+
+
 
 
 /* game wrapper */
 
 #display-board {
-    margin-top: 5rem;
+    margin-top: 0;
     display: flex;
     flex-wrap: wrap;
+    border-top: 3px solid gray;
 }
 
 #display-board .game-wrapper {
@@ -91,15 +114,13 @@ nav {
 #slider-wrapper {
     display: flex;
     overflow: scroll;
-
 }
 
 #slider-wrapper .trending-game {
-    flex: 1 0 calc(100%/3);
+    flex: 0 0 calc(100%/3);
     display: flex;
     flex-direction: column;
     padding: 0.25rem;
-
 }
 
 #slider-wrapper .trending-game .game-img {
@@ -135,3 +156,4 @@ nav {
     color: rgba(255,255,255,0.5);
     font-size: 1.25rem;
 }
+
