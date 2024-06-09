@@ -54,11 +54,11 @@ const renderFeatureGames = async () => {
         featureGames.forEach((game) => {
             const x = document.createElement("div");
             x.classList.add("trending-game");
-            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img"></a>
+            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img">
             <div class="game-info">
                 <div class="game-name">${game.name}</div>
                 <div class="game-price">${game.price}</div>
-            </div>`;
+            </div></a>`;
             slider.appendChild(x);
         });
     } catch (e) {
@@ -72,11 +72,11 @@ const renderGamesBoard = async (query) => {
         allGames.forEach((game) => {
             const x = document.createElement("div");
             x.classList.add("game-wrapper");
-            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img"></a>
+            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img">
             <div class="game-info">
                 <div class="game-name">${game.name}</div>
                 <div class="game-price">$${game.price}</div>
-            </div>`;
+            </div></a>`;
             displayBoard.appendChild(x);
         });
     } catch (e) {
