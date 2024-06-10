@@ -2,13 +2,9 @@ const BASE_URL = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/";
 
 const getAllGames = async (query) => {
     try {
-        const q = `&genres=${query}`;
-        let url = "";
-        if (query) {
-            url = `${BASE_URL}games?limit=40${q}`;
-        } else {
-            url = `${BASE_URL}games?limit=40`;
-        };
+        let queryString = `&${query}`;
+        const url = `${BASE_URL}games?limit=40${queryString}`;
+        console.log(url);
         const data = await fetch(url);
         const dataJson = await data.json();
         return dataJson.data
@@ -68,17 +64,26 @@ const renderFeatureGames = async () => {
 
 const renderGamesBoard = async (query) => {
     try {
+        displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
         const allGames = await getAllGames(query);
-        allGames.forEach((game) => {
-            const x = document.createElement("div");
-            x.classList.add("game-wrapper");
-            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img">
-            <div class="game-info">
-                <div class="game-name">${game.name}</div>
-                <div class="game-price">$${game.price}</div>
-            </div></a>`;
-            displayBoard.appendChild(x);
-        });
+        displayBoard.innerHTML = "";
+        if (allGames.length === 0) {
+            const cannotFind = document.createElement("div");
+            cannotFind.setAttribute("style", "font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;");
+            cannotFind.innerHTML = "Cannot find that game, please try with other name."
+            displayBoard.append(cannotFind); 
+        } else {
+            allGames.forEach((game) => {
+                const x = document.createElement("div");
+                x.classList.add("game-wrapper");
+                x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img">
+                <div class="game-info">
+                    <div class="game-name">${game.name}</div>
+                    <div class="game-price">$${game.price}</div>
+                </div></a>`;
+                displayBoard.appendChild(x);
+            })
+        };
     } catch (e) {
         console.log("error: ", e);
     }
@@ -90,9 +95,7 @@ const renderGenreList = async () => {
        
        allGenres.forEach((genre) => {
             genre.name = genre.name[0].toUpperCase() + genre.name.substring(1);
-
             const x = document.createElement("li");
-            // x.setAttribute("href", "#");
             x.classList.add("categorize-item");
             x.innerHTML = `${genre.name}`;
             genresDisplay.append(x);
@@ -107,24 +110,16 @@ renderGamesBoard();
 renderGenreList();
 
 genresDisplay.addEventListener("click", (e) => {
-    const genre = e.target.textContent.toLowerCase();
+    const genre = "genres=" + e.target.textContent.toLowerCase();
     displayBoard.innerHTML = ""
-    console.log(genre);
-    renderGamesBoard(query=genre);
+    renderGamesBoard(genre);
 });
 
+// search game by input text
 inputButton.addEventListener("click", async () => {
     // đổi approach search backend, q *Get all games
-    console.log(inputBox.value);    
-    const allGames = await getAllGames("action");
-    const result = allGames.find((game) => game.name === inputBox.value);
-    displayBoard.innerHTML="";
-    const x = document.createElement("div");
-            x.classList.add("game-wrapper");
-            x.innerHTML = `<a href="" class="game-display"><img src="${result["header_image"]}" class="game-img"></a>
-            <div class="game-info">
-                <div class="game-name">${result.name}</div>
-                <div class="game-price">$${result.price}</div>
-            </div>`;
-            displayBoard.appendChild(x);
+    console.log(inputBox.value);
+    const searchNameQuery = "q=" + inputBox.value;
+    displayBoard.innerHTML = "";
+    renderGamesBoard(searchNameQuery);
 });
