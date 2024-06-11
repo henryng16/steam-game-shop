@@ -87,7 +87,7 @@ nav {
 }
 
 .input-box {
-    margin-top: 0.25rem;
+    margin-top: 1vh;
     margin-bottom: 0.25rem;
     padding-left: 0.8rem;
 }
@@ -175,7 +175,7 @@ nav {
 
 .game-name {
     width: 70%;
-    padding-left: 1rem;
+    padding-left: 1vw;
 }
 
 .game-price {
@@ -191,6 +191,7 @@ nav {
     text-wrap: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 1vw;
 }
 
 
@@ -209,4 +210,65 @@ nav {
     flex-direction: column;
     text-decoration: none;
     color: rgba(0, 0, 0, 0.8)
+}
+
+
+
+/* game detail style */
+
+.game-detail-wrapper {
+    margin-top: 3vh;
+    display: flex;
+    max-height: 100%;
+}
+
+.game-description {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    position: relative;
+    width: 60%;
+    padding-right: 3vw;
+}
+
+.description,
+.game-name,
+.release-date {
+    overflow: hidden;
+}
+
+.game-description > .description {
+    color: whitesmoke;
+    text-align: justify;
+    margin: 2vh 0vh 4vh 2vh;
+    font-size: 1.1vw;
+}
+
+.game-description > .game-name {
+    color: whitesmoke;
+    margin: 0vh 0vh 0.5vh;
+}
+
+.game-description > .release-date {
+    color: whitesmoke;
+    margin: 0.2vh 2vh;
+    font-size: 1vw;
+}
+
+.game-detail-wrapper > .game-img {
+    width: 40%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+}
+
+.game-tags {
+    margin-left: 2vh;
+    margin-bottom: 0.5vh;
+    position: absolute;
+    bottom: 0;
+}
+
+.game-tags > .tag {
+    width: min-content;
+    font-size: 1vw;
 }
