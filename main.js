@@ -6,7 +6,8 @@ const genresDisplay = document.querySelector(".categorize-list");
 const inputBox = document.querySelector(".input-box");
 const inputButton = document.querySelector(".input-btn");
 const loadMore = document.querySelector(".load-more");
-const displayWrapper = document.querySelector(".display-wrapper")
+const displayWrapper = document.querySelector(".display-wrapper");
+
 let numberOfPage = 1;
 let genre = '';
 let searchNameQuery = '';
@@ -56,7 +57,7 @@ const getGameDetail = async (appId) => {
         const url = `${BASE_URL}single-game/${appId}`;
         const data = await fetch(url);
         const dataJson = await data.json();
-        console.log(dataJson);
+        console.log(dataJson.data["steamspy_tags"]);
         return dataJson.data;
     } catch (e) {
         console.log("error: ", e);
@@ -70,10 +71,10 @@ const renderFeatureGames = async () => {
         featureGames.forEach((game) => {
             const x = document.createElement("div");
             x.classList.add("trending-game");
-            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img">
+            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img ${game.appid}">
             <div class="game-info">
-                <div class="game-name">${game.name}</div>
-                <div class="game-price">${game.price}</div>
+                <div class="game-name ${game.appid}">${game.name}</div>
+                <div class="game-price ${game.appid}">${game.price}</div>
             </div></a>`;
             slider.appendChild(x);
         });
@@ -126,8 +127,10 @@ const renderGenreList = async () => {
 };
 
 const renderGameDetail = async (appId) => {
+    loadMore.innerHTML = "";
     displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
     const gameDetail = await getGameDetail(appId);
+    const steamSpyTag = gameDetail["steamspy_tags"];
     displayBoard.innerHTML = "";
     const x = document.createElement('div');
     x.classList.add("game-detail-container");
@@ -139,13 +142,19 @@ const renderGameDetail = async (appId) => {
     <p class="release-date">Release date: ${gameDetail["release_date"].substring(0,10)}</p>
     <p class="description">${gameDetail.description}</p>
     <div class="game-tags">
-      <button class="tag">fps</button>
-      <button class="tag">multiplayer</button>
-      <button class="tag">shooter</button>
     </div>
   </div></div`
-  displayBoard.append(x);
+    console.log(steamSpyTag);
+    displayBoard.append(x);
+    const gameTags = document.querySelector(".game-tags");
 
+    steamSpyTag.forEach((tag) => {
+        const gameTag = document.createElement("button");
+        gameTag.classList.add("tag");
+        gameTag.innerHTML = tag[0].toUpperCase() + tag.substring(1);
+        gameTags.append(gameTag);
+    })
+    
 };
 
 renderFeatureGames();
@@ -188,6 +197,10 @@ loadMore.addEventListener("click", () => {
 
 displayBoard.addEventListener("click", (game) => {
     const appId = game.target.classList[1];
-    getGameDetail(appId);
     renderGameDetail(appId);
+})
+
+slider.addEventListener("click", (game) => {
+    const appId = game.target.classList[1];
+    console.log(appId);
 })
