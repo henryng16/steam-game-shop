@@ -1,9 +1,23 @@
 const BASE_URL = "https://steam-api-dot-cs-platform-306304.et.r.appspot.com/";
+const displayBoard = document.querySelector
+("#display-board");
+const slider = document.querySelector("#slider-wrapper");
+const genresDisplay = document.querySelector(".categorize-list");
+const inputBox = document.querySelector(".input-box");
+const inputButton = document.querySelector(".input-btn");
+const loadMore = document.querySelector(".load-more");
+let numberOfPage = 1;
+let genre = '';
+let searchNameQuery = '';
 
-const getAllGames = async (query) => {
+
+
+const getAllGames = async (query, num) => {
     try {
-        let queryString = `&${query}`;
-        const url = `${BASE_URL}games?limit=40${queryString}`;
+        // let queryString = `&${query}`;
+        let queryString =  (query) ? `&${query}` : "";
+        let numOfPage = `${num*16}`
+        const url = `${BASE_URL}games?limit=${numOfPage}${queryString}`;
         console.log(url);
         const data = await fetch(url);
         const dataJson = await data.json();
@@ -37,12 +51,6 @@ const getAllGenres = async () => {
     }
 }
 
-const displayBoard = document.querySelector
-("#display-board");
-const slider = document.querySelector("#slider-wrapper");
-const genresDisplay = document.querySelector(".categorize-list");
-const inputBox = document.querySelector(".input-box");
-const inputButton = document.querySelector(".input-btn");
 
 const renderFeatureGames = async () => {
     try {
@@ -62,10 +70,10 @@ const renderFeatureGames = async () => {
     }
 }
 
-const renderGamesBoard = async (query) => {
+const renderGamesBoard = async (query, num) => {
     try {
         displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
-        const allGames = await getAllGames(query);
+        const allGames = await getAllGames(query, num);
         displayBoard.innerHTML = "";
         if (allGames.length === 0) {
             const cannotFind = document.createElement("div");
@@ -106,20 +114,38 @@ const renderGenreList = async () => {
 }
 
 renderFeatureGames();
-renderGamesBoard();
+renderGamesBoard(searchNameQuery, numberOfPage);
 renderGenreList();
 
+// render game board by genres
 genresDisplay.addEventListener("click", (e) => {
-    const genre = "genres=" + e.target.textContent.toLowerCase();
+    inputBox.value = "";
+    numberOfPage = 1;
+    genre = "genres=" + e.target.textContent.toLowerCase();
     displayBoard.innerHTML = ""
-    renderGamesBoard(genre);
+    renderGamesBoard(genre, numberOfPage);
 });
 
 // search game by input text
-inputButton.addEventListener("click", async () => {
+inputButton.addEventListener("click", () => {
     // đổi approach search backend, q *Get all games
     console.log(inputBox.value);
-    const searchNameQuery = "q=" + inputBox.value;
-    displayBoard.innerHTML = "";
-    renderGamesBoard(searchNameQuery);
+    genre = '';
+    if (inputBox.value) {
+        numberOfPage = 1;
+        searchNameQuery = "q=" + inputBox.value;
+        displayBoard.innerHTML = "";
+        renderGamesBoard(searchNameQuery, numberOfPage);
+    }
 });
+
+
+// load more button
+loadMore.addEventListener("click", () => {
+    numberOfPage += 1;
+    if (genre) {
+        renderGamesBoard(genre, numberOfPage);
+    } else {
+        renderGamesBoard(searchNameQuery, numberOfPage);
+    }
+})
