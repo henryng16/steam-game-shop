@@ -9,14 +9,13 @@ const loadMore = document.querySelector(".load-more");
 const displayWrapper = document.querySelector(".display-wrapper");
 
 let numberOfPage = 1;
-let genre = '';
+let query = '';
 let searchNameQuery = '';
 
 
 
 const getAllGames = async (query, num) => {
     try {
-        // let queryString = `&${query}`;
         let queryString =  (query) ? `&${query}` : "";
         let numOfPage = `${num*16}`
         const url = `${BASE_URL}games?limit=${numOfPage}${queryString}`;
@@ -57,13 +56,48 @@ const getGameDetail = async (appId) => {
         const url = `${BASE_URL}single-game/${appId}`;
         const data = await fetch(url);
         const dataJson = await data.json();
-        console.log(dataJson.data["steamspy_tags"]);
         return dataJson.data;
     } catch (e) {
         console.log("error: ", e);
     }
 }
 
+const renderGameDetail = async (appId) => {
+    loadMore.setAttribute("style", "display: none;");
+    displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
+    const gameDetail = await getGameDetail(appId);
+    const steamSpyTag = gameDetail["steamspy_tags"];
+    displayBoard.innerHTML = "";
+    const x = document.createElement('div');
+    x.classList.add("game-detail-container");
+    x.innerHTML = `<div class="section-name" style="margin: 0rem 0.5vh -1rem; color: whitesmoke;">
+                    <h2>${gameDetail.name}</h2>
+                </div><div class="game-detail-wrapper"><img src="${gameDetail["header_image"]}" class="game-img">
+  <div class="game-description">
+    
+    <p class="release-date">Release date: ${gameDetail["release_date"].substring(0,10)}</p>
+    <p class="description">${gameDetail.description}</p>
+    <div class="game-tags">
+    </div>
+  </div></div`
+    displayBoard.append(x);
+    const gameTags = document.querySelector(".game-tags");
+
+    steamSpyTag.forEach((tag) => {
+        const gameTag = document.createElement("button");
+        gameTag.classList.add("tag");
+        gameTag.innerHTML = tag[0].toUpperCase() + tag.substring(1);
+        gameTags.append(gameTag);
+        
+        // add event listener for each tag
+        gameTag.addEventListener('click', (_) => {
+            query = `steamspy_tags=${_.target.textContent.toLowerCase()}`;
+            numberOfPage = 1;
+            renderGamesBoard(query, numberOfPage);
+        });
+    })
+    
+};
 
 const renderFeatureGames = async () => {
     try {
@@ -71,20 +105,27 @@ const renderFeatureGames = async () => {
         featureGames.forEach((game) => {
             const x = document.createElement("div");
             x.classList.add("trending-game");
-            x.innerHTML = `<a href="" class="game-display"><img src="${game["header_image"]}" class="game-img ${game.appid}">
+            x.innerHTML = `<a href="#" class="game-display"><img src="${game["header_image"]}" class="game-img ${game.appid}">
             <div class="game-info">
                 <div class="game-name ${game.appid}">${game.name}</div>
                 <div class="game-price ${game.appid}">${game.price}</div>
             </div></a>`;
             slider.appendChild(x);
+
+            // add event listener to each game
+            x.addEventListener('click', (_) => {
+                const appId = _.target.classList[1];
+                renderGameDetail(appId);
+            })
         });
     } catch (e) {
         console.log("error: ", e);
     }
-}
+};
 
 const renderGamesBoard = async (query, num) => {
     try {
+        loadMore.setAttribute("style", "display: initial;");
         displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
         const allGames = await getAllGames(query, num);
         displayBoard.innerHTML = "";
@@ -103,6 +144,12 @@ const renderGamesBoard = async (query, num) => {
                     <div class="game-price ${game.appid}">$${game.price}</div>
                 </div></a>`;
                 displayBoard.appendChild(x);
+
+                // add event listener for each game
+                x.addEventListener('click', (_) => {
+                    const appId = _.target.classList[1];
+                    renderGameDetail(appId);
+                })
             })
         };
     } catch (e) {
@@ -126,56 +173,25 @@ const renderGenreList = async () => {
     }
 };
 
-const renderGameDetail = async (appId) => {
-    loadMore.innerHTML = "";
-    displayBoard.innerHTML = `<h1 style="font-size: 1rem; color: whitesmoke; padding: 1rem 0.5rem;">LOADING..........................</h1>`;
-    const gameDetail = await getGameDetail(appId);
-    const steamSpyTag = gameDetail["steamspy_tags"];
-    displayBoard.innerHTML = "";
-    const x = document.createElement('div');
-    x.classList.add("game-detail-container");
-    x.innerHTML = `<div class="section-name" style="margin: 0rem 0.5vh -1rem; color: whitesmoke;">
-                    <h2 style="flex: 0 0">${gameDetail.name}</h2>
-                </div><div class="game-detail-wrapper"><img src="${gameDetail["header_image"]}" class="game-img">
-  <div class="game-description">
-    
-    <p class="release-date">Release date: ${gameDetail["release_date"].substring(0,10)}</p>
-    <p class="description">${gameDetail.description}</p>
-    <div class="game-tags">
-    </div>
-  </div></div`
-    console.log(steamSpyTag);
-    displayBoard.append(x);
-    const gameTags = document.querySelector(".game-tags");
 
-    steamSpyTag.forEach((tag) => {
-        const gameTag = document.createElement("button");
-        gameTag.classList.add("tag");
-        gameTag.innerHTML = tag[0].toUpperCase() + tag.substring(1);
-        gameTags.append(gameTag);
-    })
-    
-};
-
+// initialize 
 renderFeatureGames();
-renderGamesBoard(searchNameQuery, numberOfPage);
+renderGamesBoard("", numberOfPage);
 renderGenreList();
 
 // render game board by genres
 genresDisplay.addEventListener("click", (e) => {
     inputBox.value = "";
     numberOfPage = 1;
-    genre = "genres=" + e.target.textContent.toLowerCase();
+    query = "genres=" + e.target.textContent.toLowerCase();
     displayBoard.innerHTML = ""
-    renderGamesBoard(genre, numberOfPage);
-    console.log(genre);
+    renderGamesBoard(query, numberOfPage);
 });
 
 // search game by input text
 inputButton.addEventListener("click", () => {
     // đổi approach search backend, q *Get all games
-    console.log(inputBox.value);
-    genre = '';
+    query = '';
     if (inputBox.value) {
         numberOfPage = 1;
         searchNameQuery = "q=" + inputBox.value;
@@ -188,19 +204,14 @@ inputButton.addEventListener("click", () => {
 // load more button
 loadMore.addEventListener("click", () => {
     numberOfPage += 1;
-    if (genre) {
-        renderGamesBoard(genre, numberOfPage);
+    if (query) {
+        renderGamesBoard(query, numberOfPage);
     } else {
         renderGamesBoard(searchNameQuery, numberOfPage);
     }
 })
 
-displayBoard.addEventListener("click", (game) => {
-    const appId = game.target.classList[1];
-    renderGameDetail(appId);
-})
 
-slider.addEventListener("click", (game) => {
-    const appId = game.target.classList[1];
-    console.log(appId);
-})
+
+
+
