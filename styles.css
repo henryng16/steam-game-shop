@@ -26,7 +26,6 @@ nav {
 
 .nav-logo {
     align-self: center;
-    height: 36.77px;
 }
 
 .nav-logo > img {
@@ -117,7 +116,7 @@ nav {
 }
 
 .categorize-item:hover {
-    font-size: 1rem;
+    font-size: 1.1vw;
     text-decoration: underline;
     transition: 150ms ease-in-out;
 }
@@ -350,7 +349,19 @@ nav {
 @media (max-width: 430px) {
     .display-wrapper {
         --displayNumber: 2;
+        flex: 1;
+        width: 90%;
+        margin: 0 auto;
     }
+    
+    .nav-link {
+        display: none;
+    }
+
+    .nav-logo {
+        margin: 0 auto;
+    }
+
     .container {
         margin: 0;
         flex-direction: column;
@@ -359,7 +370,32 @@ nav {
         width: 100vw;
     }
     .search-wrapper {
-        display: none;
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .input-box,.input-btn {
+        margin-right: 0vw;
+        text-align: center;
+        height: auto;
+    }
+    
+    .categorize-list {
+        display: flex;
+    }
+
+    .categorize-item {
+        width: min-content;
+        text-wrap: nowrap;
+        overflow: scroll;
+    }
+    
+    .section-name {
+        margin: 5vh;
+    }
+
+    h2 {
+        text-align: center; 
     }
 }
 
