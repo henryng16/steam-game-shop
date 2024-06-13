@@ -353,7 +353,11 @@ nav {
         width: 90%;
         margin: 0 auto;
     }
-    
+
+    .display-wrapper > .section-name {
+        padding-bottom: 2vh;
+    }
+
     .nav-link {
         display: none;
     }
@@ -382,12 +386,12 @@ nav {
     
     .categorize-list {
         display: flex;
+        overflow: scroll;
     }
 
     .categorize-item {
         width: min-content;
         text-wrap: nowrap;
-        overflow: scroll;
     }
     
     .section-name {
